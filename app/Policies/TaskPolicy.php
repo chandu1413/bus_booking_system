@@ -31,6 +31,7 @@ class TaskPolicy
     public function delete(User $user, Task $task): bool
     {
         if ($user->isSuperAdmin() || $user->isAdmin()) return true;
-        return $task->project->owner_id === $user->id || $task->created_by === $user->id;
+        return $task->project->owner_id === $user->id
+            || $task->created_by === $user->id;
     }
 }

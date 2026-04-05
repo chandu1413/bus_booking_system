@@ -19,11 +19,13 @@ class AuthenticatedSessionController extends Controller
             'email'    => 'required|email',
             'password' => 'required',
         ]);
+ 
 
         if (!Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
             return back()->withErrors(['email' => 'These credentials do not match our records.'])->withInput();
         }
 
+         
         $request->session()->regenerate();
         auth()->user()->update(['last_login_at' => now()]);
 

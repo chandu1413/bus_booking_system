@@ -33,5 +33,8 @@ class RolesAndPermissionsSeeder extends Seeder
 
         $member = Role::firstOrCreate(['name' => 'Member', 'guard_name' => 'web']);
         $member->syncPermissions(['manage_tasks']);
+
+        $operator = Role::create(['name' => 'Operator', 'guard_name' => 'web']);
+        $customer = Role::create(['name' => 'Customer', 'guard_name' => 'web']);
     }
 }

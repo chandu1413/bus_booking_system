@@ -20,18 +20,18 @@ class AdminDashboardController extends Controller
 
         $stats = Cache::remember('admin_stats', 600, function () {
             return [
-                'total_users'           => User::count(),
-                'active_users'          => User::where('is_active', true)->count(),
-                'total_projects'        => Project::count(),
-                'active_projects'       => Project::where('status', 'Active')->count(),
-                'completed_projects'    => Project::where('status', 'Completed')->count(),
-                'on_hold_projects'      => Project::where('status', 'OnHold')->count(),
-                'total_tasks'           => Task::count(),
-                'completed_tasks'       => Task::where('status', 'done')->count(),
-                'overdue_tasks'         => Task::where('due_date', '<', today())->whereNotIn('status', ['done'])->count(),
-                'tasks_todo'            => Task::where('status', 'todo')->count(),
-                'tasks_in_progress'     => Task::where('status', 'in_progress')->count(),
-                'tasks_in_review'       => Task::where('status', 'in_review')->count(),
+                'total_users'        => User::count(),
+                'active_users'       => User::where('is_active', true)->count(),
+                'total_projects'     => Project::count(),
+                'active_projects'    => Project::where('status', 'Active')->count(),
+                'completed_projects' => Project::where('status', 'Completed')->count(),
+                'on_hold_projects'   => Project::where('status', 'OnHold')->count(),
+                'total_tasks'        => Task::count(),
+                'completed_tasks'    => Task::where('status', 'done')->count(),
+                'overdue_tasks'      => Task::where('due_date', '<', today())->whereNotIn('status', ['done'])->count(),
+                'tasks_todo'         => Task::where('status', 'todo')->count(),
+                'tasks_in_progress'  => Task::where('status', 'in_progress')->count(),
+                'tasks_in_review'    => Task::where('status', 'in_review')->count(),
             ];
         });
 
@@ -49,7 +49,9 @@ class AdminDashboardController extends Controller
             ->orderBy('month')
             ->get();
 
-        $topUsers = User::withCount(['tasks as completed_tasks' => fn($q) => $q->where('status', 'done')])
+        $topUsers = User::withCount([
+            'tasks as completed_tasks' => fn($q) => $q->where('status', 'done'),
+        ])
             ->orderByDesc('completed_tasks')
             ->take(5)
             ->get();

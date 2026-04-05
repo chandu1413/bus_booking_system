@@ -1,7 +1,9 @@
 @extends('layouts.app')
 @section('title', 'Tasks')
 @section('page-title', $project->name . ' — Tasks')
-@section('breadcrumb', '<a href="'.route('projects.index').'" class="text-indigo-600 hover:underline">Projects</a> / <a href="'.route('projects.show', $project).'" class="text-indigo-600 hover:underline">'.e($project->name).'</a> / Tasks')
+@section('breadcrumb')
+    {!! '<a href="'.route('projects.index').'" class="text-indigo-600 hover:underline">Projects</a> / <a href="'.route('projects.show', $project).'" class="text-indigo-600 hover:underline">'.e($project->name).'</a> / Tasks' !!}
+@endsection
 @section('content')
 <div class="flex items-center justify-between mb-5">
     <div class="text-sm text-gray-500">{{ $tasks->count() }} tasks total</div>

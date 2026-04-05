@@ -13,6 +13,13 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
 
+        if($user->hasRole('Operator')) {
+            return redirect()->route('operator.dashboard');
+        } 
+        // elseif ($user->hasRole('user')) {
+        //     return redirect()->route('customer.dashboard');
+        // }
+
         $projects = Cache::remember("user_projects_{$user->id}", 300, function () use ($user) {
             return Project::forUser($user)
                 ->with(['owner', 'tasks'])

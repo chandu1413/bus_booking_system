@@ -79,4 +79,22 @@ class User extends Authenticatable
         }
         return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=6366f1&color=fff';
     }
+
+     // Profile (one-to-one)
+    public function profile()
+    {
+        return $this->hasOne(Profile::class);
+    }
+
+    // Operator (if role = operator)
+    public function operator()
+    {
+        return $this->hasOne(Operator::class);
+    }
+
+    // Customer (if role = customer)
+    public function customer()
+    {
+        return $this->hasOne(Customer::class);
+    }
 }

@@ -14,7 +14,7 @@
         </div>
 
         <div class="bg-white rounded-2xl shadow-2xl p-8">
-            <form method="POST" action="/login">
+            <form method="POST" action="{{ route('login') }}">
                 @csrf
                 <div class="mb-5">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>

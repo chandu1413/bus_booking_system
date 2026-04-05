@@ -1,7 +1,9 @@
 @extends('layouts.app')
 @section('title', 'Edit Project')
 @section('page-title', 'Edit Project')
-@section('breadcrumb', '<a href="'.route('projects.index').'" class="text-indigo-600 hover:underline">Projects</a> / <a href="'.route('projects.show', $project).'" class="text-indigo-600 hover:underline">'.e($project->name).'</a> / Edit')
+@section('breadcrumb')
+    {!! '<a href="'.route('projects.index').'" class="text-indigo-600 hover:underline">Projects</a> / <a href="'.route('projects.show', $project).'" class="text-indigo-600 hover:underline">'.e($project->name).'</a> / Edit' !!}
+@endsection
 @section('content')
 <div class="max-w-2xl">
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8">

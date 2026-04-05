@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
+use App\Events\ProjectCreated;
 use App\Models\Project;
 use App\Models\User;
-use App\Services\ActivityLogService;
 use Illuminate\Support\Facades\Cache;
 
 class ProjectService
@@ -14,9 +14,9 @@ class ProjectService
     public function create(array $data, User $owner): Project
     {
         $project = Project::create(array_merge($data, ['owner_id' => $owner->id]));
-        // Auto-add owner as member
         $project->projectMembers()->create(['user_id' => $owner->id, 'role' => 'owner']);
         $this->logService->log($owner, $project, 'created', "Created project: {$project->name}");
+        ProjectCreated::dispatch($project);
         $this->clearCache();
         return $project;
     }
@@ -25,7 +25,7 @@ class ProjectService
     {
         $old = $project->status;
         $project->update($data);
-        if ($old !== $project->status) {
+        if ($old !== $project->fresh()->status) {
             $this->logService->log($user, $project, 'status_changed',
                 "Changed status from {$old} to {$project->status}");
         } else {

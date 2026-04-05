@@ -14,17 +14,22 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\ReportController;
+use Illuminate\Support\Facades\Artisan;
 
 // Root redirect
 Route::get('/', function () {
     return auth()->check() ? redirect()->route('dashboard') : redirect()->route('login');
 });
 
+Route::get('/clear-all', function() {
+    Artisan::call('optimize:clear');
+    return "All Laravel caches (route, config, views, application) have been cleared!";
+});
+
 // Auth routes (Breeze)
 require __DIR__.'/auth.php';
 
 // Authenticated routes
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 // Projects
 Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
@@ -69,18 +74,3 @@ Route::delete('/attachments/{attachment}', [AttachmentController::class, 'destro
 // Activity Logs
 Route::get('/activity', [ActivityLogController::class, 'index'])->name('activity.index');
 
-// Admin Panel
-Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
-Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users.index');
-Route::get('/admin/users/create', [UserController::class, 'create'])->name('admin.users.create');
-Route::post('/admin/users', [UserController::class, 'store'])->name('admin.users.store');
-Route::get('/admin/users/{user}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
-Route::put('/admin/users/{user}', [UserController::class, 'update'])->name('admin.users.update');
-Route::delete('/admin/users/{user}', [UserController::class, 'destroy'])->name('admin.users.destroy');
-Route::get('/admin/roles', [RoleController::class, 'index'])->name('admin.roles.index');
-Route::get('/admin/roles/create', [RoleController::class, 'create'])->name('admin.roles.create');
-Route::post('/admin/roles', [RoleController::class, 'store'])->name('admin.roles.store');
-Route::get('/admin/roles/{role}/edit', [RoleController::class, 'edit'])->name('admin.roles.edit');
-Route::put('/admin/roles/{role}', [RoleController::class, 'update'])->name('admin.roles.update');
-Route::delete('/admin/roles/{role}', [RoleController::class, 'destroy'])->name('admin.roles.destroy');
-Route::get('/admin/reports', [ReportController::class, 'index'])->name('admin.reports.index');

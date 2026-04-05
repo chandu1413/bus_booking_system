@@ -1,7 +1,9 @@
 @extends('layouts.app')
 @section('title', $task->title)
 @section('page-title', $task->title)
-@section('breadcrumb', '<a href="'.route('projects.show', $project).'" class="text-indigo-600 hover:underline">'.e($project->name).'</a> / '.e($task->title))
+@section('breadcrumb')
+    {!! '<a href="'.route('projects.show', $project).'" class="text-indigo-600 hover:underline">'.e($project->name).'</a> / '.e($task->title) !!}
+@endsection
 @section('content')
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Main Content -->

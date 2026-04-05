@@ -6,14 +6,20 @@ use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Project;
 use App\Services\ProjectService;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class ProjectController extends Controller
 {
+    use AuthorizesRequests;
+
     public function __construct(private ProjectService $projectService) {}
 
     public function index()
     {
         $user = auth()->user();
+        if (!$user) {
+            return redirect()->route('login');
+        }
         $projects = Project::forUser($user)
             ->with(['owner', 'tasks'])
             ->latest()

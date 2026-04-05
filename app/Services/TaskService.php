@@ -7,7 +7,6 @@ use App\Models\Task;
 use App\Models\User;
 use App\Events\TaskStatusChanged;
 use App\Events\TaskAssigned;
-use App\Services\ActivityLogService;
 
 class TaskService
 {
@@ -19,7 +18,7 @@ class TaskService
         $data['created_by'] = $creator->id;
         $task = Task::create($data);
         $this->logService->log($creator, $task, 'created', "Created task: {$task->title}");
-        if ($task->assignee_id && $task->assignee_id !== $creator->id) {
+        if (!empty($task->assignee_id) && $task->assignee_id !== $creator->id) {
             event(new TaskAssigned($task, $task->assignee));
         }
         return $task;
@@ -30,6 +29,7 @@ class TaskService
         $oldStatus   = $task->status;
         $oldAssignee = $task->assignee_id;
         $task->update($data);
+        $task->refresh();
         if ($oldStatus !== $task->status) {
             $this->logService->log($user, $task, 'status_changed',
                 "Status changed from {$oldStatus} to {$task->status}");
@@ -37,7 +37,7 @@ class TaskService
         } else {
             $this->logService->log($user, $task, 'updated', "Updated task: {$task->title}");
         }
-        if ($oldAssignee !== $task->assignee_id && $task->assignee_id && $task->assignee_id !== $user->id) {
+        if ($oldAssignee !== $task->assignee_id && !empty($task->assignee_id) && $task->assignee_id !== $user->id) {
             event(new TaskAssigned($task, $task->assignee));
         }
         return $task;

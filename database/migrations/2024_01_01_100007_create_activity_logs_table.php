@@ -16,13 +16,16 @@ return new class extends Migration
             $table->text('description');
             $table->json('properties')->nullable();
             $table->timestamp('created_at');
-            $table->index(['loggable_type', 'loggable_id']);
             $table->index('user_id');
         });
     }
 
     public function down(): void
     {
+        Schema::table('activity_logs', function (Blueprint $table) {
+            // Drop the loggable index if it exists
+            $table->dropIndex('activity_logs_loggable_type_loggable_id_index');
+        });
         Schema::dropIfExists('activity_logs');
     }
 };

@@ -13,7 +13,7 @@
             <p class="text-indigo-200 mt-1">Create your free workspace account</p>
         </div>
         <div class="bg-white rounded-2xl shadow-2xl p-8">
-            <form method="POST" action="/register">
+            <form method="POST" action="{{ route('register') }}">
                 @csrf
                 <div class="mb-4">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>

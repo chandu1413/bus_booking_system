@@ -10,19 +10,17 @@ use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
-    public function __construct()
-    {
-        // Only SuperAdmin and Admin
-    }
-
     private function checkAccess(): void
     {
-        if (!auth()->user()->isSuperAdmin() && !auth()->user()->isAdmin()) abort(403);
+       if (!auth()->user()->hasAnyRole(['admin', 'super_admin'])) {
+            abort(403);
+        }
     }
 
     public function index()
     {
-        $this->checkAccess();
+        // $this->checkAccess();
+        // dd(auth()->user()->getRoleNames());
         $users = User::with('roles')
             ->withTrashed()
             ->latest()
@@ -41,28 +39,32 @@ class UserController extends Controller
     {
         $this->checkAccess();
         $validated = $request->validate([
-            'name'     => 'required|string|max:255',
-            'email'    => 'required|email|unique:users,email',
-            'password' => 'required|min:8|confirmed',
-            'roles'    => 'required|array',
-            'roles.*'  => 'exists:roles,id',
-            'is_active'=> 'boolean',
+            'name'      => 'required|string|max:255',
+            'email'     => 'required|email|unique:users,email',
+            'password'  => 'required|min:8|confirmed',
+            'roles'     => 'required|array',
+            'roles.*'   => 'exists:roles,id',
+            'is_active' => 'sometimes|boolean',
         ]);
+
         $user = User::create([
             'name'      => $validated['name'],
             'email'     => $validated['email'],
             'password'  => Hash::make($validated['password']),
             'is_active' => $request->boolean('is_active', true),
         ]);
+
         $roles = Role::whereIn('id', $validated['roles'])->pluck('name');
         $user->syncRoles($roles);
-        return redirect()->route('admin.users.index')->with('success', 'User created successfully!');
+
+        return redirect()->route('admin.users.index')
+            ->with('success', 'User created successfully!');
     }
 
     public function edit(User $user)
     {
         $this->checkAccess();
-        $roles = Role::all();
+        $roles     = Role::all();
         $userRoles = $user->roles->pluck('id')->toArray();
         return view('admin.users.edit', compact('user', 'roles', 'userRoles'));
     }
@@ -76,19 +78,24 @@ class UserController extends Controller
             'password'  => 'nullable|min:8|confirmed',
             'roles'     => 'required|array',
             'roles.*'   => 'exists:roles,id',
-            'is_active' => 'boolean',
+            'is_active' => 'sometimes|boolean',
         ]);
+
         $user->update([
             'name'      => $validated['name'],
             'email'     => $validated['email'],
             'is_active' => $request->boolean('is_active', true),
         ]);
+
         if ($request->filled('password')) {
             $user->update(['password' => Hash::make($request->password)]);
         }
+
         $roles = Role::whereIn('id', $validated['roles'])->pluck('name');
         $user->syncRoles($roles);
-        return redirect()->route('admin.users.index')->with('success', 'User updated!');
+
+        return redirect()->route('admin.users.index')
+            ->with('success', 'User updated successfully!');
     }
 
     public function destroy(User $user)

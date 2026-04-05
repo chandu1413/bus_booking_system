@@ -11,7 +11,9 @@ class RoleController extends Controller
 {
     private function checkAccess(): void
     {
-        if (!auth()->user()->isSuperAdmin()) abort(403);
+        if (!auth()->user()->isSuperAdmin()) {
+            abort(403);
+        }
     }
 
     public function index()
@@ -32,22 +34,26 @@ class RoleController extends Controller
     {
         $this->checkAccess();
         $request->validate([
-            'name'           => 'required|string|max:255|unique:roles,name',
-            'permissions'    => 'array',
-            'permissions.*'  => 'exists:permissions,id',
+            'name'          => 'required|string|max:255|unique:roles,name',
+            'permissions'   => 'array',
+            'permissions.*' => 'exists:permissions,id',
         ]);
+
         $role = Role::create(['name' => $request->name, 'guard_name' => 'web']);
+
         if ($request->permissions) {
             $perms = Permission::whereIn('id', $request->permissions)->pluck('name');
             $role->syncPermissions($perms);
         }
-        return redirect()->route('admin.roles.index')->with('success', 'Role created!');
+
+        return redirect()->route('admin.roles.index')
+            ->with('success', 'Role created successfully!');
     }
 
     public function edit(Role $role)
     {
         $this->checkAccess();
-        $permissions = Permission::all()->groupBy(fn($p) => explode('_', $p->name)[0]);
+        $permissions     = Permission::all()->groupBy(fn($p) => explode('_', $p->name)[0]);
         $rolePermissions = $role->permissions->pluck('id')->toArray();
         return view('admin.roles.edit', compact('role', 'permissions', 'rolePermissions'));
     }
@@ -60,12 +66,16 @@ class RoleController extends Controller
             'permissions'   => 'array',
             'permissions.*' => 'exists:permissions,id',
         ]);
+
         $role->update(['name' => $request->name]);
+
         $perms = $request->permissions
             ? Permission::whereIn('id', $request->permissions)->pluck('name')
             : [];
         $role->syncPermissions($perms);
-        return redirect()->route('admin.roles.index')->with('success', 'Role updated!');
+
+        return redirect()->route('admin.roles.index')
+            ->with('success', 'Role updated successfully!');
     }
 
     public function destroy(Role $role)

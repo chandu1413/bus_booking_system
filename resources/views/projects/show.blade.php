@@ -1,7 +1,9 @@
 @extends('layouts.app')
 @section('title', $project->name)
 @section('page-title', $project->name)
-@section('breadcrumb', '<a href="'.route('projects.index').'" class="text-indigo-600 hover:underline">Projects</a> / '.e($project->name))
+@section('breadcrumb')
+    {!! '<a href="'.route('projects.index').'" class="text-indigo-600 hover:underline">Projects</a> / '.e($project->name) !!}
+@endsection
 @section('content')
 <div class="flex items-start justify-between mb-6">
     <div class="flex items-center space-x-3">

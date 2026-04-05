@@ -1,7 +1,9 @@
 @extends('layouts.app')
 @section('title', 'New Project')
 @section('page-title', 'Create New Project')
-@section('breadcrumb', '<a href="'.route('projects.index').'" class="text-indigo-600 hover:underline">Projects</a> / Create')
+@section('breadcrumb')
+    {!! '<a href="'.route('projects.index').'" class="text-indigo-600 hover:underline">Projects</a> / Create' !!}
+@endsection
 @section('content')
 <div class="max-w-2xl">
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8">

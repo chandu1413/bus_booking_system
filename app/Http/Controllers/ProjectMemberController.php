@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use App\Models\User;
 use App\Services\ProjectService;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 
 class ProjectMemberController extends Controller
 {
+    use AuthorizesRequests;
+
     public function __construct(private ProjectService $projectService) {}
 
     public function index(Project $project)

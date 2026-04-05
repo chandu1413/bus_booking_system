@@ -12,16 +12,21 @@ class ReportController extends Controller
 {
     public function index()
     {
-        if (!auth()->user()->can('view_reports') && !auth()->user()->isSuperAdmin()) abort(403);
+        if (!auth()->user()->can('view_reports') && !auth()->user()->isSuperAdmin()) {
+            abort(403);
+        }
 
         $projectStats = Project::select('status', DB::raw('count(*) as total'))
-            ->groupBy('status')->pluck('total', 'status');
+            ->groupBy('status')
+            ->pluck('total', 'status');
 
         $taskStats = Task::select('status', DB::raw('count(*) as total'))
-            ->groupBy('status')->pluck('total', 'status');
+            ->groupBy('status')
+            ->pluck('total', 'status');
 
         $priorityStats = Task::select('priority', DB::raw('count(*) as total'))
-            ->groupBy('priority')->pluck('total', 'priority');
+            ->groupBy('priority')
+            ->pluck('total', 'priority');
 
         $monthlyTasks = Task::select(
             DB::raw('MONTH(created_at) as month'),

@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Subtask;
 use App\Models\Task;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 
 class SubtaskController extends Controller
 {
+    use AuthorizesRequests;
+
     public function store(Request $request, Task $task)
     {
         $this->authorize('update', $task);
